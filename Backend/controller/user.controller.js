@@ -47,14 +47,14 @@ const getUser = asyncHandler(async (req, res) => {
 });
 
 // GET ALL USERS
-const getAllUsers = asyncHandler(async(req,res) =>{
-    const users = await User.find();
-    if(!users){
-        res.status(400);
-        throw new Error("Users were not feteched.")
-    }else{
-        res.status(200).json(users);
-    }
-})
+const getAllUsers = asyncHandler(async (req, res) => {
+  const users = await User.find();
+  if (!users) {
+    res.status(400);
+    throw new Error("Users were not feteched.");
+  } else {
+    res.status(200).json(users);
+  }
+});
 
-export {getAllUsers, getUser, deleteUser,updateUser};
+export { getAllUsers, getUser, deleteUser, updateUser };

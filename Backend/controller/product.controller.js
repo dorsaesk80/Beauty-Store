@@ -78,9 +78,8 @@ const getALLproducts = asyncHandler(async (req, res) => {
     });
   } else {
     products = await Product.find().sort({ createdAt: -1 });
-   
   }
-  res.status(200).json(products)
+  res.status(200).json(products);
 });
 
 // RATING PRODUCT
@@ -88,9 +87,8 @@ const getALLproducts = asyncHandler(async (req, res) => {
 const ratingProduct = asyncHandler(async (req, res) => {
   const { star, name, comment, postedBy } = req.body;
 
-  console.log(star, name, comment, postedBy)
-  console.log(req.params.id)
-
+  console.log(star, name, comment, postedBy);
+  console.log(req.params.id);
 
   if (star) {
     await Product.findByIdAndUpdate(
@@ -110,4 +108,11 @@ const ratingProduct = asyncHandler(async (req, res) => {
   }
 });
 
-export {ratingProduct, getALLproducts,getProduct, createProduct,updateProduct, deleteProduct}
+export {
+  ratingProduct,
+  getALLproducts,
+  getProduct,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+};

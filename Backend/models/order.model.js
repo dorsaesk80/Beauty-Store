@@ -5,34 +5,27 @@ const OrderSchema = mongoose.Schema(
       type: String,
       require: true,
     },
-
     userId: {
       type: String,
       require: true,
     },
-
     products: {
       type: Array,
       require: true,
     },
-
     total: {
       type: Number,
       require: true,
     },
-
     address: {
       type: String,
     },
-
     phone: {
       type: String,
     },
-
     email: {
       type: String,
     },
-
     status: {
       type: Number,
       default: 0,

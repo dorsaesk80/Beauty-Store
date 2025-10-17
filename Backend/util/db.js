@@ -3,11 +3,10 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const dbConnection = async () => {
-  const DB = process.env.DB;
-  
+  const DB = process.env.DB; 
   try {
     await mongoose.connect(DB).then(() => {
-      console.log("Database is connected succesfully");
+      console.log("Database is connected successfully");
     });
   } catch (error) {
     console.log(error);
