@@ -3,10 +3,9 @@ import dotenv from "dotenv";
 dotenv.config();
 
 function createTransporter(config) {
-  const transporter = nodemailer.createTransporter(config);
+  const transporter = nodemailer.createTransport(config);
   return transporter;
 }
-
 let configurations = {
   service: "gmail",
   host: "smtp.gmail.com",
@@ -21,7 +20,6 @@ let configurations = {
 const sendMail = async (messageoption) => {
   const transporter = await createTransporter(configurations);
   await transporter.verify();
-
   await transporter.sendMail(messageoption, (error, info) => {
     if (error) {
       console.log(error);
