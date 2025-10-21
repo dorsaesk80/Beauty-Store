@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar";
 import Myaccount from "./pages/Myaccount";
 import Announcement from "./components/Announcement";
 import { RouterProvider, createBrowserRouter, Outlet } from "react-router-dom";
+import Product from "./pages/Product";
 
 function App() {
   const Layout = () => {
@@ -33,7 +34,12 @@ function App() {
         {
           path:"/myaccount",
           element: <Myaccount/>
+        },
+        {
+          path:"/product/:productId",
+          element: <Product/>
         }
+
       ]
     },
     
