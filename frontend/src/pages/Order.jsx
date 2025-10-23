@@ -45,8 +45,17 @@ const Order = () => {
                     <Rating
                       name="simple-controlled"
                       value={value}
+                      precision={0.01}
                       onChange={(event, newValue) => {
                         setValue(newValue);
+                      }}
+                      sx={{
+                        "& .MuiRating-iconFilled": {
+                           color: "gray",
+                        },
+                        "& .MuiRating-iconHover": {
+                          color: "darkgray",
+                        },
                       }}
                     />
                     <textarea
@@ -84,8 +93,17 @@ const Order = () => {
                     <Rating
                       name="simple-controlled"
                       value={value}
+                      precision={0.01}
                       onChange={(event, newValue) => {
                         setValue(newValue);
+                      }}
+                      sx={{
+                        "& .MuiRating-iconFilled": {
+                           color: "gray",
+                        },
+                        "& .MuiRating-iconHover": {
+                          color: "darkgray",
+                        },
                       }}
                     />
                     <textarea
@@ -116,34 +134,28 @@ const Order = () => {
           <p className="text-gray-600">VISA</p>
         </div>
 
-
         <div className="bg-gray-50 p-4 rounded-lg">
-            <h3 className="text-xl font-semibold mb-2">Order Summary</h3>
-            <div className="flex justify-between mb-2">
-                <span className="text-lg font-medium">Subtotal:</span>
-                <span className="text-lg font-semibold">$720</span>
-
-            </div>
-            <div className="flex justify-between mb-2">
-                <span className="text-lg font-medium">Shipping</span>
-                <span className="text-lg font-semibold">$10</span>
-
-            </div>
-            <div className="flex justify-between mb-2">
-                <span className="text-lg font-medium">Total:</span>
-                <span className="text-lg font-semibold">$730</span>
-
-            </div>
-
+          <h3 className="text-xl font-semibold mb-2">Order Summary</h3>
+          <div className="flex justify-between mb-2">
+            <span className="text-lg font-medium">Subtotal:</span>
+            <span className="text-lg font-semibold">$720</span>
+          </div>
+          <div className="flex justify-between mb-2">
+            <span className="text-lg font-medium">Shipping</span>
+            <span className="text-lg font-semibold">$10</span>
+          </div>
+          <div className="flex justify-between mb-2">
+            <span className="text-lg font-medium">Total:</span>
+            <span className="text-lg font-semibold">$730</span>
+          </div>
         </div>
 
         <div className="mt-8 text-center">
-            <button className="bg-[#ef93db] text-white p-3 rounded-lg font-semibold cursor-pointer">Continue Shopping</button>
-
+          <button className="bg-[#ef93db] text-white p-3 rounded-lg font-semibold cursor-pointer">
+            Continue Shopping
+          </button>
         </div>
-
       </div>
-
     </div>
   );
 };
