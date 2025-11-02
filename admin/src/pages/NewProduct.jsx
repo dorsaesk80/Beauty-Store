@@ -51,7 +51,7 @@ const NewProduct = () => {
     try {
       
       const uploadRes = await axios.post(
-        "https://api.cloudinary.com/v1_1/dkjenslgr/image/upload",
+        "https://api.cloudinary.com/v1_1/dgptknud0/image/upload",
         data 
       );
 
@@ -91,7 +91,7 @@ const NewProduct = () => {
                   </div>
                 </div>
               ) : (
-                <img src={URL.createObjectURL(selectedImage)} alt="" />
+                <img src={URL.createObjectURL(selectedImage)} alt="Product" className="h-[100px] w-[100px] object-cover rounded-md"/>
               )}
               <input
                 type="file"
