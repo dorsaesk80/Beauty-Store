@@ -1,5 +1,20 @@
+import { useLocation } from "react-router-dom";
 import Products from "../components/Products";
+import { useState } from "react";
 const ProductList = () => {
+
+  const location = useLocation();
+  const query = location.pathname.split("/")[2];
+  const [filters, setFilters] = useState({});
+  const [sort, setSort] = useState("newest")
+
+  const handleFilters = (e) =>{
+    const value = e.target.value;
+    setFilters({
+      ...filters,
+      [e.target.name]: value,
+    })
+  }
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="flex justify-between m-4">
@@ -11,6 +26,7 @@ const ProductList = () => {
             name="concern"
             id=""
             className="p-2 mb-4 sm:mb-0 sm:mr-4 border rounded bg-white"
+            onChange={handleFilters}
           >
             <option>Dry Skin</option>
             <option>Pigmentation</option>
@@ -40,6 +56,7 @@ const ProductList = () => {
             name="brand"
             id=""
             className="p-2 mb-4 sm:mb-0 sm:mr-4 border rounded bg-white"
+            onChange={handleFilters}
           >
             <option>Garnier</option>
             <option>Kylie</option>
@@ -62,6 +79,7 @@ const ProductList = () => {
             name="price"
             id=""
             className="p-2 mb-4 sm:mb-0 sm:mr-4 border rounded bg-white"
+            onChange={(e) => setSort(e.target.value)}
           >
             <option value="newest">Newest</option>
             <option value="asc">Price (asc)</option>
@@ -70,7 +88,7 @@ const ProductList = () => {
         </div>
       </div>
 
-      <Products/>
+      <Products query={query} filters={filters} sort={sort}/>
 
 
     </div>
