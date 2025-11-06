@@ -1,76 +1,73 @@
 import { useEffect, useState } from "react";
 import Product from "./Product";
 import PropTypes from "prop-types";
-import {userRequest} from "../RequestMethods";
+import { userRequest } from "../RequestMethods";
 import {Link} from "react-router-dom";
 
-const Products = ({filters, sort, query}) => {
-  const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
+const Products = ({ filters, sort, query }) => {
+  const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
 
-  console.log(products)
+  useEffect(() => {
+    const getProducts = async () => {
+      try {
+        let res;
+        if (query) {
+          res = await userRequest.get(`/products?search=${query}`);
+        } else {
+          res = await userRequest.get("/products");
+        }
+        setProducts(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getProducts();
+  }, [query]);
 
-  useEffect(() => {
-    const getProducts = async () => {
-      try {
-        let res;
+  useEffect(() => {
+    let tempProducts = [...products];
 
-        if (query) {
-          res = await userRequest.get(`/products?search=${query}`);
-        } else {
-          res = await userRequest.get("/products");
-        }
-        setProducts(res.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getProducts();
-  }, [query]);
+    // apply filters
+    if (filters) {
+      tempProducts = tempProducts.filter((item) =>
+        Object.entries(filters).every(([key, value]) => {
+          if (!value) return true;
+          return item[key].includes(value);
+        })
+      );
+    }
+    //Apply sorting
+    if (sort === "newest") {
+      tempProducts.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+    } else if (sort === "asc") {
+      tempProducts.sort((a, b) => a.originalPrice - b.originalPrice);
+    } else if (sort === "desc") {
+      tempProducts.sort((a, b) => b.originalPrice - a.originalPrice);
+    }
 
-  useEffect(() => {
-    let tempProducts = [...products];
+    setFilteredProducts(tempProducts);
+  }, [products, filters, sort]);
 
-    // apply filters
-
-    if (filters) {
-      tempProducts = tempProducts.filter((item) =>
-        Object.entries(filters).every(([key, value]) => {
-          if (!value) return true;
-          return item[key].includes(value);
-        })
-      );
-    }
-
-    //Apply Sorting
-    if(sort === "newest") {
-      tempProducts.sort(
-        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-      );
-    } else if (sort === "asc") {
-      tempProducts.sort((a, b) => a.originalPrice - b.originalPrice);
-    } else if (sort === "desc") {
-      tempProducts.sort((a, b) => b.originalPrice - a.originalPrice);
-    }
-
-    setFilteredProducts(tempProducts);
-  }, [products, filters, sort]);
-
-  return (
-    <div className="flex flex-wrap mx-[40px]">
-      {filteredProducts.map((product, index) => (
-        <Link to={`/product/${product._id}`}>
-        <Product img={product.img} title={product.title} />
-        </Link>
-      ))}
-    </div>
-  );
+  return (
+    <div className="flex flex-wrap mx-[40px]">
+      {filteredProducts.map((product, index) => (
+        <Link to={`/product/${product._id}`} key={product._id}>
+          <Product product={product} />
+        </Link>
+      ))
+      }
+    </div>
+  );
 };
 
-Products.PropTypes = {
-  cat: PropTypes.string,
-  filters: PropTypes.object,
-  sort: PropTypes.string,
-  query: PropTypes.string,
+Products.propTypes = {
+  cat: PropTypes.string,
+  filters: PropTypes.object,
+  sort: PropTypes.string,
+  query: PropTypes.string,
 };
+
 export default Products;

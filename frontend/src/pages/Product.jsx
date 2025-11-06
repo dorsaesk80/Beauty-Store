@@ -1,162 +1,213 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react"; 
+import Rating from "@mui/material/Rating"; 
 import { FaMinus, FaPlus } from "react-icons/fa";
-import Rating from "@mui/material/Rating";
 import { useLocation } from "react-router-dom";
 import { userRequest } from "../RequestMethods";
+import { useDispatch, useSelector } from "react-redux";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { addProduct } from "../redux/cartRedux";
+import { showAverageRating } from "../components/Ratings";
 
 const Product = () => {
-  const location = useLocation();
-  const id = location.pathname.split("/")[2];
-  const [product, setproduct] = useState({});
-  const [quantity, setQuantity] = useState(1);
+  const [value, setValue] = useState(0); 
+  const location = useLocation();
+  const id = location.pathname.split("/")[2];
+  const [product, setProduct] = useState({});
+  const [quantity, setQuantity] = useState(1);
+  const dispatch = useDispatch();
+  const cart = useSelector((state) => state.cart);
 
-  let price;
+  let price;
 
-  const handleQuantity = (action) => {
-    if (action === "dec") {
-      setQuantity(quantity === 1 ? 1 : quantity - 1);
-    }
-    if (action === "inc") {
-      setQuantity(quantity + 1);
-    }
-  };
+  const handleQuantity = (action) => {
+    if (action === "dec") {
+      setQuantity(quantity === 1 ? 1 : quantity - 1);
+    }
+    if (action === "inc") {
+      setQuantity(quantity + 1);
+    }
+  };
 
-  useEffect(() => {
-    const getProduct = async () => {
-      try {
-        const res = await userRequest.get("/products/find/" + id);
+  useEffect(() => {
+    const getProduct = async () => {
+      try {
+        const res = await userRequest.get("/products/find/" + id);
 
-        setproduct(res.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+        setProduct(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getProduct();
+  }, [id]);
 
-    getProduct();
-  }, [id]);
+  const handlePrice = (
+    originalPrice,
+    discountedPrice,
+    wholePrice,
+    minimumQuantity,
+    quantity
+  ) => {
+    if (quantity > minimumQuantity && discountedPrice) {
+      discountedPrice = wholePrice;
 
-  const handlePrice = (
-    originalPrice,
-    discountedPrice,
-    wholePrice,
-    minimumQuantity,
-    quantity
-  ) => {
-    if (quantity > minimumQuantity && discountedPrice) {
-      discountedPrice = wholePrice;
-      price = discountedPrice;
-      return price;
-    } else if (quantity > minimumQuantity && originalPrice) {
-      originalPrice = wholePrice;
-      price = originalPrice;
-      return price;
-    } else if (discountedPrice) {
-      price = discountedPrice;
-      return price;
-    } else {
-      price = originalPrice;
-      return price;
-    }
-  };
-  const [value, setValue] = useState(2.403);
-  return (
-    <div className="h-auto flex justify-stretch p-[30px]">
-      {/* LEFT */}
-      <div className="flex-1 h-[500px] w-[600px]">
-        <img
-          src={product.img}
-          alt=""
-          className="h-[100%] w-[100%] object-cover"
-        />
-      </div>
+      price = discountedPrice;
 
-      {/* RIGHT */}
-      <div className="flex flex-1 flex-col ml-10">
-        <h2 className="text-[25px] font-semibold mb-[20px]">{product.title}</h2>
-        <span>{product.desc}</span>
-        <h2 className="font font-semibold mt-2 text-[20px]">
-          $
-          {handlePrice(
-            product.originalPrice,
-            product.discountedPrice,
-            product.wholesalePrice,
-            product?.wholesaleMinimumQuantity,
-            quantity
-          )}
-        </h2>
-        <span className="flex items-center">
-          <Rating
-            name="simple-controlled"
-            value={value}
-            onChange={(event, newValue) => {
-              setValue(newValue);
-            }}
-          />
-          (2)
-        </span>
+      return price;
+    } else if (quantity > minimumQuantity && originalPrice) {
+      originalPrice = wholePrice;
 
-        <div className="h-52 w-96 border-2 border-gray-300 rounded-lg shadow-md my-4 p-6">
-          <h2 className="flex items-center justify-center font-semibold text-lg text-gray-700 mb-4">
-            WHATE`S IN THE BOX
-          </h2>
-          <hr className="mb-4" />
-          <span className="block text-gray-600 text-base text-[18px]">
-           {product.title}
-          </span>
-        </div>
+      price = originalPrice;
 
-        <div className="inline-flex items-center bg-[#ef93db] text-white font-semibold text-sm p-3 rounded-full shadow-md">
-          Wholesdale Available : ${product.wholesalePrice} as from {product.wholesaleMinimumQuantity} items
-        </div>
+      return price;
+    } else if (discountedPrice) {
+      price = discountedPrice;
 
-        <div className="flex items-center my-5 p-4">
-          <FaMinus
-            className="bg-[#ef93db] text-white cursor-pointer p-2 rounded-full mr-4 text-3xl"
-            onClick={() => handleQuantity("dec")}
-          />
-          <span className="text-lg font-semibold mx-4">{quantity}</span>
-          <FaPlus
-            className="bg-[#ef93db] text-white cursor-pointer p-2 rounded-full mr-4 text-3xl"
-            onClick={() => handleQuantity("inc")}
-          />
-        </div>
+      return price;
+    } else {
+      price = originalPrice;
 
-        <button className="bg-[#1e1e1e] p-[10px] w-[200px] text-white cursor-pointer">
-          Add to Cart
-        </button>
+      return price;
+    }
+  };
 
-        <hr className="my-6" />
+  const handleAddToCart = () => {
+    dispatch(
+      addProduct({
+        ...product,
+        quantity,
+        price,
+        email: "test.for.my.projects.1@gmail.com",
+      })
+    );
+    toast.success("Product has been added to basket successfully!", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
 
-        <div className="flex flex-col">
-          <h2 className="font-semibold text-[18px]">Reviews</h2>
+    console.log(cart);
+  };
 
-          <div className="flex items-center">
-            <Rating
-              name="simple-controlled"
-              value={value}
-              onChange={(event, newValue) => {
-                setValue(newValue);
-              }}
-            />
+  return (
+    <div className=" h-auto flex justify-stretch p-[30px]">
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
 
-            <span className="font-semibold mx-[20px]">John K.</span>
-          </div>
+      {/* LEFT */}
+      <div className="flex-1 h-[500px] w-[600px]">
+        <img
+          src={product.img}
+          alt="product"
+          className="h-[100%] w-[100%] object-cover"
+        />
+      </div>
 
-          <div className="flex items-center">
-            <Rating
-              name="simple-controlled"
-              value={value}
-              onChange={(event, newValue) => {
-                setValue(newValue);
-              }}
-            />
+      {/* RIGHT */}
+      <div className="flex flex-1 flex-col ml-10">
+        <h2 className="text-[25px] font-semibold mb-[20px]">{product.title}</h2>
+        <span className="">{product.desc}</span>
+        <h2 className="font-semibold mt-2 text-[20px]">
+          $
+          {handlePrice(
+            product.originalPrice,
+            product.discountedPrice,
+            product.wholesalePrice,
+            product?.wholesaleMinimumQuantity,
+            quantity
+          )}
+        </h2>
+        <span className="flex items-center">{showAverageRating(product)}</span>
 
-            <span className="font-semibold mx-[20px]">Jane L.</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+        <div className="h-52 w-96 border-2 border-gray-300 rounded-lg shadow-md my-4 p-6 ">
+          <h2 className="flex items-center justify-center font-semibold text-lg text-gray-700 mb-4">
+            WHAT'S IN THE BOX
+          </h2>
+          <hr className="mb-4 text-gray-300" />
+          <span className="block text-gray-600 text-base text-[18px]">
+            {product.title}
+          </span>
+        </div>
+
+        <div className="inline-flex items-center bg-[#ef93db] text-white font-semibold text-sm p-3 rounded-full shadow-md">
+          Wholesale Availabe : ${product.wholesalePrice} as from{" "}
+          {product.wholesaleMinimumQuantity} items{" "}
+        </div>
+
+        <div className="flex items-center my-5 p-4">
+          <FaMinus
+            className="bg-[#ef93db] text-white cursor-pointer p-2 rounded-full mr-4 text-3xl"
+            onClick={() => handleQuantity("dec")}
+          />
+          <span className="text-lg font-semibold mx-4">{quantity}</span>
+          <FaPlus
+            className="bg-[#ef93db] text-white cursor-pointer p-2 rounded-full mr-4 text-3xl"
+            onClick={() => handleQuantity("inc")}
+          />
+        </div>
+
+        <button
+          className="bg-[#1e1e1e] p-[10px] w-[200px] text-white cursor-pointer"
+          onClick={handleAddToCart}
+        >
+          Add to cart
+        </button>
+        <hr className="my-6 text-gray-300" />
+
+        <div className="flex flex-col">
+          <h2 className="font-semibold text-[18px]">Reviews</h2>
+
+          {product.ratings && product.ratings.length > 0 ? (
+            product.ratings.map((r, index) => (
+              <div
+                className="flex flex-col mt-2 border-b border-gray-200 pb-2"
+                key={index}
+              >
+                <div className="flex items-center">
+                  <Rating
+                    name="read-only"
+                    value={parseFloat(r.star)}
+                    readOnly
+                    precision={0.1}
+                  />
+                  <span className="font-semibold ml-2">{r.name}</span>
+                </div>
+                <p className="text-gray-600 ml-2">{r.comment}</p>
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-500 mt-2">No reviews yet.</p>
+          )}
+
+          {product?.Rating?.map((Rating, index) => (
+            <div className="flex items-center" key={index}>
+              <Rating 
+                name="simple-controlled"
+                value={value}
+                onChange={(event, newValue) => {
+                  setValue(newValue);
+                }} 
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default Product;
