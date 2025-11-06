@@ -46,24 +46,25 @@ const NewProduct = () => {
     data.append("file", selectedImage);
     data.append("upload_preset", "uploads");
 
-    setUploading("uploading ...")
+    setUploading("uploading ...");
     try {
-      
       const uploadRes = await axios.post(
         "https://api.cloudinary.com/v1_1/dgptknud0/image/upload",
-        data 
+        data
       );
 
-      const {url} = uploadRes.data;
-      
-      setUploading("uploaded 100%")
-      await userRequest.post("/products", {img: url, ...inputs, ...selectedOptions})
+      const { url } = uploadRes.data;
+
+      setUploading("uploaded 100%");
+      await userRequest.post("/products", {
+        img: url,
+        ...inputs,
+        ...selectedOptions,
+      });
     } catch (error) {
       console.log(error);
-      setUploading("unloading failed")
-      
+      setUploading("unloading failed");
     }
-    
   };
   return (
     <div className="p-5">
@@ -90,7 +91,11 @@ const NewProduct = () => {
                   </div>
                 </div>
               ) : (
-                <img src={URL.createObjectURL(selectedImage)} alt="Product" className="h-[100px] w-[100px] object-cover rounded-md"/>
+                <img
+                  src={URL.createObjectURL(selectedImage)}
+                  alt="Product"
+                  className="h-[100px] w-[100px] object-cover rounded-md"
+                />
               )}
               <input
                 type="file"
@@ -99,7 +104,6 @@ const NewProduct = () => {
                 style={{ display: "none" }}
               />
             </div>
-
 
             <span className="text-green-500">{uploading}</span>
 
@@ -246,16 +250,15 @@ const NewProduct = () => {
             </div>
 
             <div className="mt-2">
-              {selectedOptions.concern.map((option) =>(
+              {selectedOptions.concern.map((option) => (
                 <div key={option} className="flex items-center space-x-2">
                   <span>{option}</span>
-                  <FaTrash className="cursor-pointer text-red-500"
-                  onClick={() => handleRemoveOption("concern", option)}
+                  <FaTrash
+                    className="cursor-pointer text-red-500"
+                    onClick={() => handleRemoveOption("concern", option)}
                   />
-
                 </div>
               ))}
-
             </div>
 
             <div>
@@ -280,18 +283,16 @@ const NewProduct = () => {
             </div>
 
             <div className="mt-2">
-              {selectedOptions.skintype.map((option) =>(
+              {selectedOptions.skintype.map((option) => (
                 <div key={option} className="flex items-center space-x-2">
                   <span>{option}</span>
-                  <FaTrash className="cursor-pointer text-red-500"
-                  onClick={() => handleRemoveOption("skintype", option)}
+                  <FaTrash
+                    className="cursor-pointer text-red-500"
+                    onClick={() => handleRemoveOption("skintype", option)}
                   />
-
                 </div>
               ))}
-
             </div>
-
 
             <div>
               <label htmlFor="" className="block mb-2 font-semibold">
@@ -313,20 +314,21 @@ const NewProduct = () => {
               </select>
             </div>
             <div className="mt-2">
-              {selectedOptions.categories.map((option) =>(
+              {selectedOptions.categories.map((option) => (
                 <div key={option} className="flex items-center space-x-2">
                   <span>{option}</span>
-                  <FaTrash className="cursor-pointer text-red-500"
-                  onClick={() => handleRemoveOption("categories", option)}
+                  <FaTrash
+                    className="cursor-pointer text-red-500"
+                    onClick={() => handleRemoveOption("categories", option)}
                   />
-
                 </div>
               ))}
-
             </div>
 
-
-            <button className="bg-slate-500 text-white py-2 px-4 rounded" onClick={handleUpload}>
+            <button
+              className="bg-slate-500 text-white py-2 px-4 rounded"
+              onClick={handleUpload}
+            >
               Create
             </button>
           </div>

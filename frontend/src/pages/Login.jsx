@@ -7,8 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useS+
-  tate(false);
+  const [loading, setLoading] = useState(false);
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -18,7 +17,7 @@ const Login = () => {
     try {
       setLoading(true);
 
-      login(dispatch, (email, password));
+      login(dispatch, {email, password});
 
       console.log(user.currentUser);
 
